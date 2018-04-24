@@ -40,6 +40,8 @@ class PanelCalculadora extends JPanel {
 	private JPanel botonesCalcu;
 	private JButton pantallaCalcu;
 	private boolean primerNumero;//Para saber si se pulsó por primera vez una tecla 
+	private double resultado;
+	private String ultimaOperacion;
 	
 	public PanelCalculadora() {
 		
@@ -61,26 +63,29 @@ class PanelCalculadora extends JPanel {
 		
 		ActionListener insertar = new InsertaNumero();/*Instancia que pasa el segundo
 		argumento de ActionListener oyente en la clase PonerBoton()*/
+		ActionListener orden = new AccionOrder();
 		
 		PonerBoton("7", insertar);
 		PonerBoton("8", insertar);
 		PonerBoton("9", insertar);
-		//PonerBoton("MAS");
+		PonerBoton("MAS", orden);
 		
 		PonerBoton("4", insertar);
 		PonerBoton("5", insertar);
 		PonerBoton("6", insertar);
-		//PonerBoton("MENOS");
+		PonerBoton("MENOS", orden);
 		
 		PonerBoton("1", insertar);
 		PonerBoton("2", insertar);
 		PonerBoton("3", insertar);
-		//PonerBoton("POR");
+		PonerBoton("POR", orden);
 		
 		PonerBoton("0", insertar);
 		PonerBoton(".", insertar);
-		//PonerBoton("CE");
-		//PonerBoton("=");
+		PonerBoton("CE", orden);
+		PonerBoton("=", orden);
+		
+		ultimaOperacion = "=";
 		
 	}
 	
@@ -106,6 +111,43 @@ class PanelCalculadora extends JPanel {
 				primerNumero = false;
 			}
 			pantallaCalcu.setText(pantallaCalcu.getText() + entrada);//Se agrega a la pantalla
+			
+		}
+		
+	}
+	
+	private class AccionOrder implements ActionListener {
+
+		public void actionPerformed(ActionEvent e) {
+			
+			//Se obtiene el botón de operación
+			String operacion = e.getActionCommand();
+			
+			Calcular(Double.parseDouble(pantallaCalcu.getText()));	
+			
+			ultimaOperacion = operacion;//Almacena las operaciones que se vayan realizando					
+			
+			/*Hace que borre el siguiente valor numérico cuando se hace una operación
+			que se pasa por parámetro cuando un botón de operación se presiona
+			y al entrar en el if de la clase de InsertaNumero resetea el display */
+			primerNumero = true;
+			
+		}
+		
+		public void Calcular(double x) {
+			
+			if (ultimaOperacion.equals("MAS"))
+				resultado+= x;
+			else if (ultimaOperacion.equals("MENOS"))
+				resultado -= x;
+			else if (ultimaOperacion.equals("POR"))
+				resultado *= x;
+			else if (ultimaOperacion.equals("CE"))
+				resultado = 0;
+			else if (ultimaOperacion.equals("="))
+				resultado = x;
+			
+			pantallaCalcu.setText("" + resultado);
 			
 		}
 		
